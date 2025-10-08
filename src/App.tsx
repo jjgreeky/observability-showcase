@@ -15,13 +15,14 @@ const App: React.FC = () => {
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    fetch('/HOMEWORK_SOLUTION_SUMMARY.md')
+    fetch(`${process.env.PUBLIC_URL}/HOMEWORK_SOLUTION_SUMMARY.md`)
       .then((response) => response.text())
       .then((text) => {
         const parsedSteps = parseMarkdown(text);
         setSteps(parsedSteps);
         stepRefs.current = stepRefs.current.slice(0, parsedSteps.length);
-      });
+      })
+      .catch((error) => console.error('Error loading markdown:', error));
   }, []);
 
   const parseMarkdown = (markdown: string): StepData[] => {
