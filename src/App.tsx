@@ -15,7 +15,9 @@ const App: React.FC = () => {
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/HOMEWORK_SOLUTION_SUMMARY.md`)
+    // Add cache-busting parameter
+    const cacheBuster = new Date().getTime();
+    fetch(`${process.env.PUBLIC_URL}/HOMEWORK_SOLUTION_SUMMARY.md?v=${cacheBuster}`)
       .then((response) => response.text())
       .then((text) => {
         const parsedSteps = parseMarkdown(text);
