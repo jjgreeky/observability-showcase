@@ -54,7 +54,7 @@ const App: React.FC = () => {
   return (
     <Container fluid>
       <Row>
-        <Col xs={3} md={2} className="sidebar">
+        <Col md={2} className="sidebar d-none d-md-block">
           <Nav className="flex-column sidebar-sticky">
             <Nav.Item>
               <Nav.Link onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -70,7 +70,7 @@ const App: React.FC = () => {
             ))}
           </Nav>
         </Col>
-        <Col xs={9} md={10} className="main-content">
+        <Col xs={12} md={10} className="main-content">
           <div ref={el => { stepRefs.current[0] = el; }}>
             <h1>Observability Stack Implementation: A Step-by-Step Guide</h1>
             <p>This interactive guide walks you through the process of deploying a complete observability stack on GKE.</p>
