@@ -74,6 +74,11 @@ const App: React.FC = () => {
 
   return (
     <Container fluid>
+      {/* Mobile Header Bar */}
+      <div className="mobile-header d-md-none">
+        <div className="mobile-header-title">Observability Stack</div>
+      </div>
+
       {/* Mobile Menu Button */}
       <button
         className="mobile-menu-btn d-md-none"
