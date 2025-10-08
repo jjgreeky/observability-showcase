@@ -12,6 +12,8 @@ interface StepData {
 
 const App: React.FC = () => {
   const [steps, setSteps] = useState<StepData[]>([]);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -26,6 +28,23 @@ const App: React.FC = () => {
       })
       .catch((error) => console.error('Error loading markdown:', error));
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+
+      for (let i = stepRefs.current.length - 1; i >= 0; i--) {
+        const ref = stepRefs.current[i];
+        if (ref && ref.offsetTop <= scrollPosition) {
+          setActiveStep(i);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [steps]);
 
   const parseMarkdown = (markdown: string): StepData[] => {
     const sections = markdown.split('---').map(s => s.trim());
@@ -49,21 +68,54 @@ const App: React.FC = () => {
       behavior: 'smooth',
       block: 'start',
     });
+    setActiveStep(index);
+    setMenuOpen(false);
   };
 
   return (
     <Container fluid>
+      {/* Mobile Menu Button */}
+      <button
+        className="mobile-menu-btn d-md-none"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span className={`hamburger ${menuOpen ? 'open' : ''}`}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      {/* Overlay */}
+      {menuOpen && (
+        <div
+          className="mobile-overlay d-md-none"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
       <Row>
-        <Col md={2} className="sidebar d-none d-md-block">
+        <Col md={2} className={`sidebar ${menuOpen ? 'sidebar-open' : ''}`}>
           <Nav className="flex-column sidebar-sticky">
             <Nav.Item>
-              <Nav.Link onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <Nav.Link
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setMenuOpen(false);
+                  setActiveStep(0);
+                }}
+                className={activeStep === 0 ? 'active' : ''}
+              >
                 Introduction
               </Nav.Link>
             </Nav.Item>
             {steps.map((step, index) => (
               <Nav.Item key={index}>
-                <Nav.Link onClick={() => scrollToStep(index)}>
+                <Nav.Link
+                  onClick={() => scrollToStep(index)}
+                  className={activeStep === index ? 'active' : ''}
+                >
                   {step.title.split(':')[0]}
                 </Nav.Link>
               </Nav.Item>
