@@ -270,7 +270,7 @@ Deployed Grafana Alloy with:
 ### 3. Getting It Going
 - Generated 2 traces/second via telemetrygen
 - Generated 1,740 HTTP requests (cost: $0.006)
-- Built dashboard with 22 panels using Grafana AI query generator
+- Built dashboard with 20 panels using Grafana AI query generator
 
 ### Key Breakthroughs
 
@@ -347,6 +347,6 @@ Alloy replaced three agents (Prometheus, Promtail, Tempo) with one container usi
 - Perplexity was invaluable for finding official docs when Claude/Gemini provided outdated examples
 - Gemini caught YAML errors before deployment, saving troubleshooting time
 
-**Dashboard:** https://jonathantschetterjr.grafana.net/public-dashboards/1aa3c3d5f8b74c9e9ceca2d577a6100d
+**Dashboard:** https://jonathantschetterjr.grafana.net/public-dashboards/c5368a906f9547ddb6b2c9e073225de2
 
-**Word Count:** 2,068 words
+**Word Count:** 2,045 words
