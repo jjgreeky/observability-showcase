@@ -205,6 +205,26 @@ pre {
   word-wrap: break-word;
 }
 
+/* KaTeX formula styling */
+.katex {
+  color: #f9fafb;
+}
+
+.katex .mord,
+.katex .mop,
+.katex .mbin,
+.katex .mrel,
+.katex .mopen,
+.katex .mclose,
+.katex .mpunct,
+.katex .minner {
+  color: #f9fafb;
+}
+
+.katex-display {
+  color: #f9fafb;
+}
+
 a,
 button,
 .nav-link,
