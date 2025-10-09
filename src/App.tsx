@@ -175,6 +175,9 @@ const App: React.FC = () => {
               <p id="dashboard-description" className="text-muted small">
                 Explore the live dashboard showing metrics, logs, and traces from the deployed observability stack.
               </p>
+              <div className="alert alert-info mt-2" role="note">
+                <strong>Note:</strong> You'll need to toggle the app on/off to generate metrics, logs, and traces due to cost considerations. The dashboard will show data when traffic is actively being generated.
+              </div>
             </div>
           </section>
           

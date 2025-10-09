@@ -207,27 +207,27 @@ h3 {
   font-size: 1.25rem !important;
   font-weight: 600 !important;
   line-height: 1.4 !important;
-  margin-top: 1.5rem !important;
+  margin-top: 2rem !important;
   margin-bottom: 0.75rem !important;
-  color: #333 !important;
+  color: #1a1a1a !important;
 }
 
 h4 {
   font-size: 1.1rem !important;
   font-weight: 600 !important;
   line-height: 1.4 !important;
-  margin-top: 1.25rem !important;
-  margin-bottom: 0.5rem !important;
-  color: #333 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+  color: #24292e !important;
 }
 
 h5 {
   font-size: 1rem !important;
   font-weight: 600 !important;
   line-height: 1.4 !important;
-  margin-top: 1rem !important;
+  margin-top: 1.25rem !important;
   margin-bottom: 0.5rem !important;
-  color: #333 !important;
+  color: #24292e !important;
 }
 
 p {
@@ -253,13 +253,23 @@ p {
   font-size: 0.875rem;
 }
 
+/* Text Formatting */
+strong, b {
+  font-weight: 600 !important;
+  color: #24292e !important;
+}
+
+em, i {
+  font-style: italic !important;
+}
+
 /* Blockquotes */
 .blockquote {
   border-left: 4px solid #007bff;
   padding-left: 1rem;
-  margin: 1rem 0;
+  margin: 1.5rem 0;
   font-style: italic;
-  color: #666;
+  color: #586069;
 }
 
 /* Buttons */
@@ -304,53 +314,83 @@ p {
 }
 
 .card-body {
-  padding: 1.5rem !important;
+  padding: 2rem !important;
 }
 
 .card-title {
-  font-size: 1.25rem !important;
+  font-size: 1.5rem !important;
   font-weight: 600 !important;
-  margin-bottom: 1rem !important;
-  color: #333 !important;
-  border-bottom: 1px solid #e5e5e5 !important;
-  padding-bottom: 0.5rem !important;
+  margin-bottom: 1.5rem !important;
+  color: #1a1a1a !important;
+  border-bottom: 2px solid #e1e4e8 !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.step-content {
+  line-height: 1.7 !important;
+}
+
+.step-content > *:first-child {
+  margin-top: 0 !important;
+}
+
+.step-content > *:last-child {
+  margin-bottom: 0 !important;
 }
 
 /* Code Blocks */
 pre {
-  background-color: #f8f9fa;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 1rem;
-  margin: 1rem 0;
-  overflow-x: auto;
-  font-size: 0.875rem;
-  line-height: 1.4;
+  background-color: #f6f8fa !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 6px !important;
+  padding: 16px !important;
+  margin: 1.5rem 0 !important;
+  overflow-x: auto !important;
+  font-size: 0.875rem !important;
+  line-height: 1.45 !important;
+  font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace !important;
 }
 
 code {
-  background-color: #f8f9fa;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  color: #e83e8c;
+  background-color: rgba(175, 184, 193, 0.2) !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 6px !important;
+  font-size: 0.85em !important;
+  color: #24292e !important;
+  font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace !important;
 }
 
 pre code {
-  background-color: transparent;
-  padding: 0;
-  color: inherit;
+  background-color: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  font-size: 100% !important;
+  border-radius: 0 !important;
 }
 
 /* Lists */
 ul, ol {
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.25rem !important;
 }
 
 li {
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
+  margin-bottom: 0.75rem !important;
+  line-height: 1.7 !important;
+  color: #586069 !important;
+}
+
+ul ul, ol ol, ul ol, ol ul {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+li > p {
+  margin-bottom: 0.5rem !important;
+}
+
+li:last-child {
+  margin-bottom: 0 !important;
 }
 
 /* Loading and Error States */
