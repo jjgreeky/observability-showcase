@@ -279,9 +279,45 @@ const App: React.FC = () => {
 
           </Col>
 
-          <Col lg={9} className="main-content">
+                    <Col lg={9} className="main-content">
 
-            <ReactMarkdown
+                      <div className="mb-4">
+
+                        <a
+
+                          href="https://jonathantschetterjr.grafana.net/public-dashboards/c5368a906f9547ddb6b2c9e073225de2"
+
+                          target="_blank"
+
+                          rel="noopener noreferrer"
+
+                          className="btn btn-primary btn-lg"
+
+                          aria-describedby="dashboard-description"
+
+                        >
+
+                          📊 View Live Grafana Dashboard
+
+                        </a>
+
+                        <p id="dashboard-description" className="text-muted small">
+
+                          Opens the live dashboard showing real-time metrics, logs, and traces from the deployed observability stack.
+
+                        </p>
+
+                        <div className="alert alert-info mt-2" role="note">
+
+                          <strong>Note:</strong> You'll need to toggle the app on/off to generate metrics, logs, and traces due to cost considerations. The dashboard will show data when traffic is actively being generated.
+
+                        </div>
+
+                      </div>
+
+                      <hr />
+
+                      <ReactMarkdown
 
               remarkPlugins={[remarkMath]}
 
