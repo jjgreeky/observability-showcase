@@ -150,77 +150,149 @@ sleep infinity  # Keep pod alive for log inspection
 - Formula: `sum(rate(prometheus_http_requests_total[5m]))`
 - Measures: Requests per second. Baseline traffic indicator - spike to 0.016 req/s shows traffic generation.
 
+**User Story:** As an SRE at Ensemble, I want to monitor the HTTP request rate, so that I can validate our capacity planning and auto-scale our resources before peak traffic hits, preventing a repeat of the Black Friday outage.
+
+---
+
 **2. HTTP P95 Latency** (METRICS)
 - Formula: `histogram_quantile(0.95, sum(rate(prometheus_http_request_duration_seconds_bucket[5m])) by (le))`
 - Measures: 95th percentile response time. Flat at ~5ms confirms excellent performance.
+
+**User Story:** As a Web Team Lead at Ensemble, I want to track P95 latency on our product and checkout pages, so that I can ensure a fast user experience and reduce cart abandonment.
+
+---
 
 **3. Log Volume Rate** (LOGS)
 - Formula: `sum(rate({namespace="monitoring"} [1m]))`
 - Measures: Total logs per second. Spikes to ~30 logs/s show burst activity patterns.
 
+**User Story:** As a DevOps Engineer at Ensemble, I want to see the log volume rate, so that I can spot unusual spikes that often indicate a system-wide failure or a DDoS attack.
+
+---
+
 **4. Logs by Pod** (LOGS)
 - Formula: `sum(rate({namespace="monitoring"} [1m])) by (pod)`
 - Measures: Which pods are logging most. Multi-colored lines show GKE system pods (gmp-operator, cilium-agent).
+
+**User Story:** As an SRE at Ensemble, I want to filter logs by pod, so that when an issue arises, I can immediately isolate the problem to a specific service instead of searching through millions of unrelated logs from Splunk.
+
+---
 
 **5. Trace Rate** (TRACES)
 - Formula: `rate({} [5m])`
 - Measures: Traces per second. Consistent 2 traces/s after 16:00 confirms telemetrygen is running.
 
+**User Story:** As an SRE at Ensemble, I want to see the overall trace rate, so that I can confirm that all our services are correctly instrumented and we have full visibility across our distributed system.
+
+---
+
 **6. Span Count Over Time** (TRACES)
 - Formula: `{} | count_over_time`
 - Measures: Total spans generated. Jump to ~700 at 16:00 shows when trace generation started.
+
+**User Story:** As a Back-End Developer at Ensemble, I want to see the span count over time, so that I can identify if a new deployment has introduced unnecessary complexity or redundant service calls.
+
+---
 
 **7. Error Log Rate** (LOGS)
 - Formula: `sum(rate({namespace="monitoring"} |~ "(?i)error|fail|exception" [1m]))`
 - Measures: Errors logged per second. Spikes to 0.15 logs/s indicate occasional failures.
 
+**User Story:** As a Product Manager at Ensemble, I want to see the error log rate in a simple graph, so that I can understand the business impact of technical issues and prioritize fixes.
+
+---
+
 **8. Warning Log Rate** (LOGS)
 - Formula: `sum(rate({namespace="monitoring"} |~ "(?i)warn" [1m]))`
 - Measures: Warnings logged per second. Spikes to 3 logs/s show periodic warning bursts.
+
+**User Story:** As a Developer at Ensemble, I want to monitor the warning log rate, so that I can address potential issues proactively before they escalate into critical, customer-facing errors.
+
+---
 
 **9. Average Span Duration** (TRACES)
 - Formula: `{} | select(duration) | avg_over_time`
 - Measures: Mean trace latency. Flat at ~0.0001 ns (microseconds) shows consistent performance.
 
+**User Story:** As a DevOps Engineer at Ensemble, I want to see the average duration of our service calls (spans), so that I can establish performance baselines and get alerted when services start to degrade.
+
+---
+
 **10. P99 Span Duration** (TRACES)
 - Formula: `{} | quantile(0.99, duration)`
 - Measures: Worst-case trace latency. Flat at ~0.000125 ns confirms no slow outliers.
+
+**User Story:** As an SRE at Ensemble, I want to focus on P99 span duration, so that I can find and fix the worst-performing transactions that are causing a terrible experience for some of our customers.
+
+---
 
 **11. CPU Usage** (METRICS)
 - Formula: `sum(rate(alloy_resources_cpu_seconds_total[5m])) by (instance)`
 - Measures: Per-pod CPU percentage. Grid of 27 gauges all green (0.5-0.8%) shows efficient resource usage.
 
+**User Story:** As a DevOps Engineer at Ensemble, I want to see CPU usage across all our pods, so that I can identify overloaded services that might be the root cause of application slowness.
+
+---
+
 **12. Memory Usage** (METRICS)
 - Formula: `sum(alloy_resources_memory_bytes) by (instance) / 1024 / 1024`
 - Measures: Per-pod memory in MiB. Grid shows stable 146-230 MiB range, no leaks detected.
+
+**User Story:** As an SRE at Ensemble, I want to monitor memory usage for memory leaks, so that I can prevent service crashes that take down the entire website.
+
+---
 
 **13. Error Count by Pod** (LOGS)
 - Formula: `sum(count_over_time({namespace="monitoring"} |~ "(?i)error" [5m])) by (pod)`
 - Measures: Which pods generate most errors. Bar chart shows spike to 15 errors for collector pods.
 
+**User Story:** As a Web Team Lead at Ensemble, I want to see the error count broken down by pod, so that I can instantly see if the checkout-service pod is failing and direct my team to the right place.
+
+---
+
 **14. Recent Errors & Warnings** (LOGS)
 - Formula: `{namespace="monitoring"} |~ "(?i)error|warn" | line_format "{{.timestamp}} {{.level}} {{.msg}}"`
 - Measures: Actual error text for debugging. Shows "v1 Endpoints deprecated in v1.33+" warning.
+
+**User Story:** As an On-Call Engineer at Ensemble, I want to see a live feed of recent errors and warnings in one place, so that I have immediate context when an alert fires, reducing our mean time to resolution (MTTR).
+
+---
 
 **15. Spans by Name** (TRACES)
 - Formula: `{} | count() by (name)`
 - Measures: Trace volume by operation. Spike to 700 shows telemetrygen operations.
 
+**User Story:** As a Developer at Ensemble, I want to group spans by their name (e.g., HTTP POST /checkout), so that I can quickly analyze the performance of a specific business transaction from end to end.
+
+---
+
 **16. Duration by Peer Service** (TRACES)
 - Formula: `{} | select(duration) | by(peer.service)`
 - Measures: Service-to-service latency. Yellow line (telemetrygen-server) at ~0.0001 ns shows fast calls.
+
+**User Story:** As a Web Team Lead at Ensemble, I want to see the duration by peer service, so that I can finally prove whether the checkout failure is our application's fault or due to the slow, third-party payment processor, all from a single dashboard.
+
+---
 
 **17. Active Goroutines** (METRICS)
 - Formula: `go_goroutines`
 - Measures: Go concurrency count. Steps from 500 → 1,250 → spike to 1,500 during load.
 
+**User Story:** As a Back-End Developer at Ensemble, I want to view active goroutines, so that I can ensure our application is running efficiently and not getting stuck on concurrent processes during high-traffic events.
+
+---
+
 **18. OS Threads** (METRICS)
 - Formula: `go_threads`
 - Measures: Operating system threads. Steps from 100 → 200 showing healthy scaling.
 
+**User Story:** As an Infrastructure Engineer at Ensemble, I want to monitor OS threads, so that I can ensure the underlying host machines are healthy and not a bottleneck for our application.
+
+---
+
 ### Observability Breakdown
 - **METRICS (6 panels):** HTTP request rate, HTTP P95 latency, CPU usage, memory usage, active goroutines, OS threads
-- **LOGS (6 panels):** Log volume rate, logs by pod, error log rate, warning log rate, error count by pod, recent errors & warnings text
+- **LOGS (6 panels):** Log volume rate, logs by pod, error log rate, warning log rate, error count by pod, recent errors & warnings
 - **TRACES (6 panels):** Trace rate, span count over time, average span duration, P99 span duration, spans by name, duration by peer service
 
 ---
@@ -330,7 +402,7 @@ Alloy replaced three agents (Prometheus, Promtail, Tempo) with one container usi
 2. **Gemini:** Validated YAML syntax, caught configuration errors, suggested alternative approaches
 3. **Claude Code:** Generated Kubernetes infrastructure (RBAC, Secrets, Alloy deployment), security patterns
 4. **Comet AI Browser:** Navigated Grafana Cloud UI, found all 3 API endpoints, generated access token
-5. **Grafana AI Agent:** Generated all 18 dashboard queries (PromQL, LogQL, TraceQL) tailored to my metrics
+5. **Grafana AI Agent:** Generated all 20 dashboard queries (PromQL, LogQL, TraceQL) tailored to my metrics
 
 **Why this matters:**
 - Each AI has unique strengths (research vs validation vs infrastructure vs UI navigation vs query generation)
@@ -339,4 +411,6 @@ Alloy replaced three agents (Prometheus, Promtail, Tempo) with one container usi
 - Perplexity was invaluable for finding official docs when Claude/Gemini provided outdated examples
 - Gemini caught YAML errors before deployment, saving troubleshooting time
 
-**Dashboard:** https://jonathantschetterjr.grafana.net/public-dashboards/c5368a906f9547ddb6b2c9e073225de2
+**Dashboard:** https://jonathantschetterjr.grafana.net/public-dashboards/1aa3c3d5f8b74c9e9ceca2d577a6100d
+
+**Word Count:** 2,068 words
