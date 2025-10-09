@@ -468,18 +468,13 @@ Alloy replaced three agents (Prometheus, Promtail, Tempo) with one container usi
 - ✅ Pipeline validation (Loki write success rate)
 - ✅ Methodical troubleshooting (infrastructure → local → logs → wait)
 
-**Innovation highlight:** Most students use a single LLM. I orchestrated **five AI tools working together**:
+**Innovation Highlight: AI Tool Synergy**
 
-1. **Perplexity:** Researched official documentation, found Alloy configuration examples, explained PromQL functions
-2. **Gemini:** Validated YAML syntax, caught configuration errors, suggested alternative approaches
-3. **Claude Code:** Generated Kubernetes infrastructure (RBAC, Secrets, Alloy deployment), security patterns
-4. **Comet AI Browser:** Navigated Grafana Cloud UI, found all 3 API endpoints, generated access token
-5. **Grafana AI Agent:** Generated all 20 dashboard queries (PromQL, LogQL, TraceQL) tailored to my metrics
+This project was brought to life through the seamless integration of five distinct AI tools. Each tool played a crucial role, and they all dovetailed together to create a powerful and efficient workflow. The tools used were:
 
-**Why this matters:**
-- Each AI has unique strengths (research vs validation vs infrastructure vs UI navigation vs query generation)
-- Iterative workflow across tools (9 interactions shown above)
-- Grafana AI was particularly fantastic—understood context like `alloy_resources_cpu_seconds_total` and generated production-ready queries instantly
-- Perplexity was invaluable for finding official docs when Claude/Gemini provided outdated examples
-- Gemini caught YAML errors before deployment, saving troubleshooting time
+- **Perplexity:** For research and documentation.
+- **Gemini:** For troubleshooting and validation.
+- **Claude Code:** For Kubernetes YAML generation.
+- **Comet AI Browser:** For UI navigation and data extraction.
+- **Grafana AI Agent:** For generating dashboard queries.
 
