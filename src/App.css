@@ -205,6 +205,34 @@ pre {
   word-wrap: break-word;
 }
 
+/* Ensure code block text is visible */
+pre code {
+  color: #f9fafb !important;
+}
+
+/* Inline code styling */
+code:not(pre code) {
+  background-color: #f3f4f6;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  color: #1f2937;
+}
+
+/* Override syntax highlighter if needed */
+pre[class*="language-"] {
+  background-color: #111827 !important;
+}
+
+pre[class*="language-"] code {
+  color: #f9fafb !important;
+}
+
+/* Ensure all syntax highlighted tokens are visible */
+.token {
+  background: none !important;
+}
+
 /* KaTeX formula styling */
 .katex {
   color: #f9fafb;
