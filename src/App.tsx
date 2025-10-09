@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Navbar, Nav, Offcanvas } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
@@ -57,7 +58,7 @@ const App: React.FC = () => {
   };
 
   const HeadingRenderer: React.FC<{ level: number, children: React.ReactNode }> = ({ level, children }) => {
-    const title = React.Children.toArray(children).join('');
+    const title = React.Children.toArray(children).join('').replace(/^#+\s*/, '');
     const id = slugify(title);
 
     useEffect(() => {
@@ -68,13 +69,13 @@ const App: React.FC = () => {
     }, [id, level, title]);
 
     switch (level) {
-      case 1: return <h1 id={id}>{children}</h1>;
-      case 2: return <h2 id={id}>{children}</h2>;
-      case 3: return <h3 id={id}>{children}</h3>;
-      case 4: return <h4 id={id}>{children}</h4>;
-      case 5: return <h5 id={id}>{children}</h5>;
-      case 6: return <h6 id={id}>{children}</h6>;
-      default: return <h6 id={id}>{children}</h6>;
+      case 1: return <h1 id={id}>{title}</h1>;
+      case 2: return <h2 id={id}>{title}</h2>;
+      case 3: return <h3 id={id}>{title}</h3>;
+      case 4: return <h4 id={id}>{title}</h4>;
+      case 5: return <h5 id={id}>{title}</h5>;
+      case 6: return <h6 id={id}>{title}</h6>;
+      default: return <h6 id={id}>{title}</h6>;
     }
   };
 
@@ -134,7 +135,7 @@ const App: React.FC = () => {
                   const match = /language-(\w+)/.exec(className || '');
                   return match ? (
                     <SyntaxHighlighter
-                      style={oneLight}
+                      style={vscDarkPlus}
                       language={match[1]}
                       PreTag="div"
                       {...props}
