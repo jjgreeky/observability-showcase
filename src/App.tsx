@@ -1,159 +1,160 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col, Nav, Button } from 'react-bootstrap';
-import Step from './components/Step';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Navbar, Nav, Offcanvas } from 'react-bootstrap';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import './App.css';
 
-interface StepData {
+interface Heading {
   id: string;
+  level: number;
   title: string;
-  description: string;
-  image?: string;
 }
 
 const App: React.FC = () => {
-  const [steps, setSteps] = useState<StepData[]>([]);
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [markdown, setMarkdown] = useState<string>('');
+  const [headings, setHeadings] = useState<Heading[]>([]);
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeLink, setActiveLink] = useState('');
 
   useEffect(() => {
-    // Add cache-busting parameter
     const cacheBuster = new Date().getTime();
     fetch(`${process.env.PUBLIC_URL}/HOMEWORK_SOLUTION_SUMMARY.md?v=${cacheBuster}`)
       .then((response) => response.text())
       .then((text) => {
-        const parsedSteps = parseMarkdown(text);
-        setSteps(parsedSteps);
-        stepRefs.current = stepRefs.current.slice(0, parsedSteps.length);
-      })
-      .catch((error) => console.error('Error loading markdown:', error));
+        setMarkdown(text);
+      });
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100;
+  const handleCloseMenu = () => setShowMenu(false);
+  const handleShowMenu = () => setShowMenu(true);
 
-      for (let i = stepRefs.current.length - 1; i >= 0; i--) {
-        const ref = stepRefs.current[i];
-        if (ref && ref.offsetTop <= scrollPosition) {
-          setActiveStep(i);
-          break;
-        }
+  const handleScroll = () => {
+    const sections = headings.map(h => document.getElementById(h.id));
+    const scrollPosition = window.scrollY + 150;
+
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const section = sections[i];
+      if (section && section.offsetTop <= scrollPosition) {
+        setActiveLink(`#${section.id}`);
+        break;
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [steps]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [headings]);
 
-  const parseMarkdown = (markdown: string): StepData[] => {
-    const sections = markdown.split('---').map(s => s.trim());
-
-    return sections.map((section, index) => {
-      const lines = section.split('\n');
-      const titleLine = lines.find(line => line.startsWith('##'));
-      const title = titleLine ? titleLine.replace('## ', '') : `Step ${index + 1}`;
-      const id = `step-${index}`;
-
-      return {
-        id,
-        title,
-        description: section,
-      };
-    });
+  const slugify = (text: string) => {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
   };
 
-  const scrollToStep = (index: number) => {
-    stepRefs.current[index]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-    setActiveStep(index);
-    setMenuOpen(false);
+  const HeadingRenderer: React.FC<{ level: number, children: React.ReactNode }> = ({ level, children }) => {
+    const title = React.Children.toArray(children).join('');
+    const id = slugify(title);
+
+    useEffect(() => {
+      setHeadings(prev => {
+        if (prev.find(h => h.id === id)) return prev;
+        return [...prev, { id, level, title }].sort((a, b) => a.id.localeCompare(b.id));
+      });
+    }, [id, level, title]);
+
+    switch (level) {
+      case 1: return <h1 id={id}>{children}</h1>;
+      case 2: return <h2 id={id}>{children}</h2>;
+      case 3: return <h3 id={id}>{children}</h3>;
+      case 4: return <h4 id={id}>{children}</h4>;
+      case 5: return <h5 id={id}>{children}</h5>;
+      case 6: return <h6 id={id}>{children}</h6>;
+      default: return <h6 id={id}>{children}</h6>;
+    }
   };
+
+  const Sidebar = () => (
+    <Nav className="flex-column">
+      {headings.filter(h => h.level === 2).map(heading => (
+        <Nav.Link 
+          key={heading.id} 
+          href={`#${heading.id}`}
+          onClick={handleCloseMenu}
+          active={activeLink === `#${heading.id}`}
+        >
+          {heading.title}
+        </Nav.Link>
+      ))}
+    </Nav>
+  );
 
   return (
-    <Container fluid>
-      {/* Mobile Header Bar */}
-      <div className="mobile-header d-md-none">
-        <div className="mobile-header-title">Observability Stack</div>
-      </div>
+    <>
+      <Navbar bg="light" expand="lg" fixed="top" className="d-lg-none">
+        <Container fluid>
+          <Navbar.Brand href="#">Observability Showcase</Navbar.Brand>
+          <Navbar.Toggle aria-controls="offcanvas-navbar" onClick={handleShowMenu} />
+        </Container>
+      </Navbar>
 
-      {/* Mobile Menu Button */}
-      <button
-        className="mobile-menu-btn d-md-none"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        <span className={`hamburger ${menuOpen ? 'open' : ''}`}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-      </button>
+      <Offcanvas show={showMenu} onHide={handleCloseMenu} responsive="lg" className="d-lg-none">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Menu</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <Sidebar />
+        </Offcanvas.Body>
+      </Offcanvas>
 
-      {/* Overlay */}
-      {menuOpen && (
-        <div
-          className="mobile-overlay d-md-none"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
-      <Row>
-        <Col md={2} className={`sidebar ${menuOpen ? 'sidebar-open' : ''}`}>
-          <Nav className="flex-column sidebar-sticky">
-            <Nav.Item>
-              <Nav.Link
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setMenuOpen(false);
-                  setActiveStep(0);
-                }}
-                className={activeStep === 0 ? 'active' : ''}
-              >
-                Introduction
-              </Nav.Link>
-            </Nav.Item>
-            {steps.map((step, index) => (
-              <Nav.Item key={index}>
-                <Nav.Link
-                  onClick={() => scrollToStep(index)}
-                  className={activeStep === index ? 'active' : ''}
-                >
-                  {step.title.split(':')[0]}
-                </Nav.Link>
-              </Nav.Item>
-            ))}
-          </Nav>
-        </Col>
-        <Col xs={12} md={10} className="main-content">
-          <div ref={el => { stepRefs.current[0] = el; }}>
-            <h1>Observability Stack Implementation: A Step-by-Step Guide</h1>
-            <p>This interactive guide walks you through the process of deploying a complete observability stack on GKE.</p>
-            <div className="mb-4">
-              <Button
-                variant="primary"
-                size="lg"
-                href="https://jonathantschetterjr.grafana.net/public-dashboards/c5368a906f9547ddb6b2c9e073225de2"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📊 View Live Grafana Dashboard
-              </Button>
+      <Container fluid>
+        <Row>
+          <Col lg={3} className="d-none d-lg-block sidebar-container">
+            <div className="sidebar-sticky">
+              <h5>Observability Showcase</h5>
+              <Sidebar />
             </div>
-          </div>
-          {steps.map((step, index) => (
-            <div key={index} ref={el => { stepRefs.current[index] = el; }} id={step.id}>
-              <Step
-                title={step.title}
-                description={step.description}
-              />
-            </div>
-          ))}
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+          <Col lg={9} className="main-content">
+            <ReactMarkdown
+              remarkPlugins={[remarkMath]}
+              rehypePlugins={[rehypeKatex]}
+              components={{
+                h1: ({ children }) => <HeadingRenderer level={1}>{children}</HeadingRenderer>,
+                h2: ({ children }) => <HeadingRenderer level={2}>{children}</HeadingRenderer>,
+                h3: ({ children }) => <HeadingRenderer level={3}>{children}</HeadingRenderer>,
+                h4: ({ children }) => <HeadingRenderer level={4}>{children}</HeadingRenderer>,
+                h5: ({ children }) => <HeadingRenderer level={5}>{children}</HeadingRenderer>,
+                h6: ({ children }) => <HeadingRenderer level={6}>{children}</HeadingRenderer>,
+                code({ node, className, children, ...props }: any) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return match ? (
+                    <SyntaxHighlighter
+                      style={oneLight}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+              }}
+            >
+              {markdown}
+            </ReactMarkdown>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
