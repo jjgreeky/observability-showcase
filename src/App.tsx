@@ -272,24 +272,12 @@ const App: React.FC = () => {
 
           <Col lg={9} as="main" id="main-content" className="main-content" tabIndex={-1}>
             <div className="mb-4 intro-actions">
-              <a
-                href="https://jonathantschetterjr.grafana.net/public-dashboards/c5368a906f9547ddb6b2c9e073225de2"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary btn-lg"
-                aria-describedby="dashboard-description"
-              >
-                <span aria-hidden>📊</span> View Live Grafana Dashboard
-              </a>
-
-              <p id="dashboard-description" className="text-muted small mb-0">
-                Opens the live dashboard showing real-time metrics, logs, and traces from the deployed observability
-                stack.
-              </p>
-
-              <div className="alert alert-info mt-3" role="note">
-                <strong>Note:</strong> Toggle the sample app on/off to generate metrics, logs, and traces. The dashboard
-                updates while traffic is actively being generated.
+              <div className="alert alert-warning" role="alert">
+                <strong>⚠️ Dashboard Temporarily Unavailable</strong>
+                <p className="mb-0 mt-2">
+                  The live Grafana dashboard is currently taken down due to cloud infrastructure costs.
+                  The showcase content below demonstrates the complete observability implementation.
+                </p>
               </div>
             </div>
 
